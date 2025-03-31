@@ -5,7 +5,7 @@ session_start();  // Start the session to use session variables
 $_SESSION['user_id'] = 1;  // Set user_id to 1 for testing
 
 // Include the database connection file
-include('../includes/dp.php');  // Adjusted path to correctly reference db.php
+include('../includes/db.php');  // Adjusted path to correctly reference db.php
 
 // Initialize variables for sender and recipient
 $sender_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;  // Default sender_id for testing
