@@ -1,8 +1,8 @@
 <?php
-// Include the database connection file
+// database connection file
 include('../includes/db.php');
 
-// Initialize user ID (you would get this from the logged-in user)
+// Initialize user ID 
 $user_id = ''; // Fetch this from session or authentication system
 
 // Query to fetch messages for the logged-in user
