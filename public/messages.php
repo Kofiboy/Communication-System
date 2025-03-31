@@ -28,7 +28,7 @@ $result = $conn->query($query);
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <li>
                         <strong>From:</strong> <?php echo $row['sender_id']; ?><br>
-                        <strong>Message:</strong> <?php echo $row['content']; ?><br>
+                        <strong>Messag:</strong> <?php echo $row['content']; ?><br>
                         <strong>Sent At:</strong> <?php echo $row['timestamp']; ?>
                     </li>
                 <?php endwhile; ?>
