@@ -2,18 +2,18 @@
 session_start();  // Start the session to use session variables
 
 // Hardcoded user_id for testing purposes
-$_SESSION['user_id'] = 1;  // Set user_id to 1 for testing
+$_SESSION['user_id'] = 1;  
 
 // database connection file
-include('../includes/db.php');  // Adjusted path to correctly reference db.php
+include('../includes/db.php'); 
 
 //variables for sender and recipient
 $sender_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;  // Default sender_id for testing
 $recipient_id = 2;  // For testing, default recipient_id 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $content = $_POST['message'];  // Get message content from form
-    $timestamp = date('Y-m-d H:i:s');  // Get the current timestamp for when the message is sent
+    $content = $_POST['message'];  // Getting message content from form
+    $timestamp = date('Y-m-d H:i:s');  // Getting the current timestamp for when the message is sent
 
     //SQL query to insert the message
     $query = "INSERT INTO message (sender_id, recipient_id, content, timestamp) 
