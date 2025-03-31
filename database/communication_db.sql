@@ -69,9 +69,12 @@ CREATE TABLE `message` (
   `Content` text NOT NULL,
   `Timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
   `Sender_ID` int NOT NULL,
+  'Recipient_ID' INT NOT NULL,
   PRIMARY KEY (`Message_ID`),
   KEY `Sender_ID` (`Sender_ID`),
-  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`Sender_ID`) REFERENCES `user` (`User_ID`)
+  KEY 'Recipient_ID' ('Recipient_ID'),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`Sender_ID`) REFERENCES `user` (`User_ID`),
+  CONSTRAINT 'message_ibfk_2' FOREIGN KEY ('Recipient_ID') REFERENCES 'user' ('User_ID')
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
