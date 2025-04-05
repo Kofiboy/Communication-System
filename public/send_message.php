@@ -1,27 +1,48 @@
 <?php
 session_start();  // Start the session to use session variables
 
-// Hardcoded user_id for testing purposes
-$_SESSION['user_id'] = 1;  
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
 
-// database connection file
-include('../includes/db.php'); 
+// Get the sender's ID from the session
+$sender_id = $_SESSION['user_id'];  // The logged-in user's ID
 
-//variables for sender and recipient
-$sender_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;  // Default sender_id for testing
-$recipient_id = 2;  // For testing, default recipient_id 
+// Include the database connection file
+include('../includes/db.php');
+
+// Fetch all users (for recipient selection)
+$recipients = [];
+$query = "SELECT User_ID, Email FROM user";
+$result = $conn->query($query);
+while ($row = $result->fetch_assoc()) {
+    $recipients[] = $row;
+}
+
+// Check if replying to a message
+$recipient_id = isset($_GET['reply_to']) ? $_GET['reply_to'] : ''; // If replying, get recipient ID
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $content = $_POST['message'];  // Getting message content from form
-    $timestamp = date('Y-m-d H:i:s');  // Getting the current timestamp for when the message is sent
+    // Get recipient ID from the form submission (overwrite reply_to if manually selected)
+    $recipient_id = $_POST['recipient']; 
+    $content = $_POST['message'];
+    $timestamp = date('Y-m-d H:i:s'); 
 
-    //SQL query to insert the message
-    $query = "INSERT INTO message (sender_id, recipient_id, content, timestamp) 
-              VALUES ('$sender_id', '$recipient_id', '$content', '$timestamp')";
-    if ($conn->query($query) === TRUE) {
-        echo "Message sent successfully!";
+    // Ensure recipient_id is valid before inserting into the database
+    if (!empty($recipient_id)) {
+        $query = "INSERT INTO message (Sender_ID, Recipient_ID, Content, Timestamp) 
+                  VALUES ('$sender_id', '$recipient_id', '$content', '$timestamp')";
+        if ($conn->query($query) === TRUE) {
+            echo "Message sent successfully!";
+            header("refresh:2; url=messages.php");  // Redirect to inbox after sending
+            exit;
+        } else {
+            echo "Error: " . $conn->error;
+        }
     } else {
-        echo "Error: " . $conn->error;
+        echo "Error: No recipient selected.";
     }
 }
 ?>
@@ -42,6 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST" action="send_message.php">
             <label for="message">Message Content:</label>
             <textarea name="message" id="message" rows="5" required></textarea><br>
+
+            <!-- Dropdown to select recipient -->
+            <label for="recipient">Select Recipient:</label>
+            <select name="recipient" id="recipient" required>
+                <?php foreach ($recipients as $recipient) { ?>
+                    <option value="<?php echo $recipient['User_ID']; ?>"
+                        <?php echo ($recipient['User_ID'] == $recipient_id) ? 'selected' : ''; ?>>
+                        <?php echo $recipient['Email']; ?>
+                    </option>
+                <?php } ?>
+            </select><br>
+
             <button type="submit">Send Message</button>
         </form>
     </main>
